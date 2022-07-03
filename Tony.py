@@ -1,9 +1,10 @@
-# import pyaudio
+# import pyAudio
+from getpass import getpass
 import pywhatkit
 from selenium import webdriver
 import time
+import os
 import pyautogui as pg
-import speech_recognition as sr
 import webbrowser as web
 import pyttsx3
 import datetime
@@ -23,23 +24,23 @@ edge_path = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 web.register('edge', None, web.BackgroundBrowser(edge_path))
 web2 = web.get('edge')
 # This is not Password protected--> password : HelloWorld
-password=input("please enter password :")
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
-
 
 date = datetime.datetime.now().day
 month = datetime.datetime.now().month
 hour = datetime.datetime.now().hour
 minute = datetime.datetime.now().minute
 
-HOU = str(hour)
-MON = str(month)
-DAT = str(date)
-MINUT = str(minute)
+HOUR = str(hour)
+MONTH = str(month)
+DATE = str(date)
+MINUTE = str(minute)
+
 # This function will wish you according to current time of your computer
+
 def wish_me():
     if hour >= 0 and hour < 12:
         speak('good morning,sir')
@@ -48,108 +49,6 @@ def wish_me():
     else:
         speak('good evening,sir')
     speak('i am always there to help you,sir')
-
-
-# screen recorder function this will alow you to record your meeting
-
-def record(x, link):
-    # record(1 or 0)
-    # 'x' takes values of{0,1,2}
-    # 0 for only recording simply
-    # 1 for starting recording after a specified time period
-    # 2 for starting a meeting (only in microsoft teams) and then recording it
-    
-    if x == 1:
-        # this is for schedulling the recording
-        # It will also inform you via a whatsapp message
-        hourr = int(input("whats the time (hour) :"))
-        minutt = int(input("whats the time (minute) : "))
-        pywhatkit.sendwhatmsg("+919588******", "hello", hourr, minutt)
-        pg.sleep(8)
-        pg.press("enter")
-        pg.hotkey("ctrl", "w")
-        pg.sleep(5)
-        pg.press("enter")
-        pg.sleep(8)
-        pg.moveTo(1060, 55)
-        pg.click()
-        pg.sleep(10)
-        pg.moveTo(800, 521)
-        pg.click()
-        pg.sleep(7)
-        pg.moveTo(515, 400)
-        pg.click()
-        pg.sleep(2)
-        pg.moveTo(415, 534)
-        pg.click()
-        pg.moveTo(845, 534)
-        pg.click()
-    elif x == 2:
-        # join meet with record
-        hourr = int(input("whats the time (hour) :"))
-        minutt = int(input("whats the time (minute) : "))
-        pywhatkit.sendwhatmsg("+919588******", "hello", hourr, minutt)
-        pg.sleep(8)
-        pg.press("enter")
-        pg.hotkey("ctrl", "w")
-        pg.sleep(5)
-        pg.press("enter")
-        pg.sleep(8)
-        pg.moveTo(1060, 55)
-        pg.click()
-        pg.sleep(10)
-        pg.moveTo(800, 521)
-        pg.click()
-        pg.sleep(7)
-        pg.moveTo(515, 400)
-        pg.click()
-        pg.sleep(2)
-        pg.moveTo(415, 534)
-        pg.click()
-        pg.moveTo(845, 534)
-        pg.click()
-        start_meet(link)
-
-        # the end
-        # recording will be ended after 1 hour and 30 minutes
-        pg.sleep(5400)
-        pg.moveTo(1060, 55)
-        pg.click()
-    else:
-        web2.open("google.com")
-        pg.sleep(8)
-        pg.moveTo(1060, 55)
-        pg.click()
-        pg.sleep(10)
-        pg.moveTo(800, 521)
-        pg.click()
-        pg.sleep(7)
-        pg.moveTo(515, 400)
-        pg.click()
-        pg.sleep(2)
-        pg.moveTo(415, 534)
-        pg.click()
-        pg.moveTo(845, 534)
-        pg.click()
-        starting_question()
-
-
-# starting meeting in Microsoft teams
-# just enter the meeting link
-def start_meet(link):
-    link= input("enter meeting link : ")
-    web2.open(link)
-    pg.sleep(10)
-    pg.press("enter")
-    pg.moveTo(990, 380)
-    pg.sleep(2)
-    pg.click()
-    pg.sleep(60)
-    pg.moveTo(639, 519)
-    pg.click()
-    pg.sleep(3)
-    pg.moveTo(642, 484)
-    pg.click()
     starting_question()
 
 # send whatsapp message intantly
@@ -159,17 +58,25 @@ def sent_whatsapp_msg(name, message):
     starting_question()
 
 
-def wrong_whatsname(contact):
+def wrong_whatsname(contact, message):
+
     speak('no contact named ' + contact)
-    speak('please see the name correctly : ')
+    speak('do you want to add new contact :')
+    ppp = input('do you want to add new contact :[y]/[n]')
+    if ppp == 'y':
+        add_contact()
+    else:
+        starting_question()
+
+    speak('please type the name correctly : ')
+    print('or type "exit"')
     contactA = input("reciever's name : ")
     if contactA == "exit":
         speak("terminal skipped")
         starting_question()
-    name = phone_numbers.get(contactA)
-    message = input("what is the messgae :")
+
     elif phone_numbers.__contains__(contactA):
-        sent_whatsapp_msg(name, message)
+        sent_whatsapp_msg(contactA, message)
 
     else:
         wrong_whatsname(wrong_whatsname(contactA))
@@ -177,45 +84,75 @@ def wrong_whatsname(contact):
 
 # add contact function
 def add_contact():
-    
+
     name_contact = input("what is the name :")
-    phone_contact = input("contact number")
+    phone_contact = input("contact number :")
     file = open("phone.py", "a", encoding='utf-8')
-    file.write("'"+name_contact+"'" + ':'+"'+91"+phone_contact+"'"+",")
-    file.close()
+    phone_no = f"+91{phone_contact}"
+    phone_numbers.update({name_contact: phone_contact})
+    phone_numbrs = str(phone_numbers)
+    print(phone_numbrs)
+    file.truncate(0)
+    file.write('phone_numbers = ' + phone_numbrs)
+    print(file)
     starting_question()
 
-# shut down laptop
-def shut_down():
-    pg.moveTo(1100,15000)
-    pg.click()
-    time.sleep(3)
-    pg.hotkey("alt","f4")
-    time.sleep(3)
-    pg.press("enter")
+# shut down device
+def shut_down(a):
+    a = int(a)
+    time.sleep(a)
+    os.system("shutdown /s /t 1")
 
-# open itutor task function
-# well this is not for everyone
 
-def i_tutor(wait_time: int = 10):
+def displaydns():
+    try:
+        os.makedirs('c:/xampp/htdocs')
+        open('c:/xampp/htdocs/log.txt')
+    except:
+        pass
+    pg.hotkey('win', 'r')
+    pg.typewrite("cmd")
+    pg.sleep(1)
+    pg.press('enter')
+    pg.sleep(1)
+    pg.typewrite('ipconfig /displaydns >c:/xampp/htdocs/log.txt')
+    pg.press('enter')
+    pg.typewrite('exit')
+    pg.press('enter')
+    starting_question()
+    
+def flushdns():
+    try:
+        os.makedirs('c:/xampp/htdocs')
+        open('c:/xampp/htdocs/log.txt')    
+    except:
+        pass
+    pg.hotkey('win', 'r')
+    pg.typewrite("cmd")
+    pg.sleep(1)
+    pg.press('enter')
+    pg.sleep(1)
+    pg.typewrite('ipconfig /flushdns')
+    pg.press('enter')
+    pg.typewrite('exit')
+    pg.press('enter')
+    starting_question()
 
-    web.open("https://digital.aakash.ac.in/login")
-    time.sleep(wait_time)
-    pg.moveTo(1250, 80)
-    pg.click()
-    time.sleep(wait_time)
-    pg.click()
-    time.sleep(wait_time)
-    pg.moveTo(1150, 650)
-    pg.click()
-    time.sleep(wait_time)
-    pg.moveTo(800, 500)
-    pg.click()
+def open_instagram():
+    username = input('username:')
+    password = getpass()
+    web.open('https://instagram.com')
+    pg.sleep(30)
+    pg.press('tab')
+    pg.press('tab')
+    pg.typewrite(username)
+    pg.press('tab')
+    pg.typewrite(password)
+    pg.press('enter')
     starting_question()
 
 
 # text to handwritting function
-
 def text_handwritting():
     # text to handwritting
     speak('please type the text!')
@@ -224,21 +161,17 @@ def text_handwritting():
     speak('completed!')
     starting_question()
 
+
 # screenshot function
 def screenshot():
     # screen shot
-    pywhatkit.take_screenshot(
-        "new capture." + DAT + "/" + MON+"//" + HOU+"/"+MINUT)
+    pywhatkit.take_screenshot()
     speak("done")
     starting_question()
 
 # search function
 def search_query(question):
-    pywhatkit.info(question, 5)
-
-# 333333333333333333333333333333333333333333333333333333333
-# 333333333333333333333333333333333333333333333333333333333
-# 333333333333333333333333333333333333333333333333333333333
+    pywhatkit.info(question, 2)
 
 # this is the main question to be asked repeatedly
 
@@ -250,42 +183,41 @@ def starting_question():
     if how_to_help == 'send message':
         speak('to whome should i send a message to? : ')
         contact = input('to whome should i send a message to? : ')
+        speak('what is the message?')
+        message = input('what is the message? : ')
         if phone_numbers.__contains__(contact):
             name = phone_numbers.get(contact)
         else:
-            wrong_whatsname(contact)
+            wrong_whatsname(contact, message)
 
-        speak('what is the message?')
-        message = input('what is the message? : ')
         sent_whatsapp_msg(name, message)
 
     elif how_to_help == 'text to handwritting':
         text_handwritting()
+        
+    elif how_to_help == 'open instagram':
+        open_instagram()
 
-    elif how_to_help == "join msmeet":           #######################
-        link = input("please give link : ")
-        start_meet(link)
-    elif how_to_help == "record screen":         ######################
-        record(0, "abc")
-    elif how_to_help == "join meet with record": #######################
-        link = input("please give link to meeting: ")
-        record(2, link)
-    elif how_to_help == 'exit':                  ####################### 
-        speak('allright terminal skipped')
+    elif how_to_help == 'exit':
+        speak('allright, terminal exitted')
+        exit()
 
-    elif how_to_help == "wait":                  #######################
+    elif how_to_help == "wait":
         speak('okay')
         hello_again = input(": ")
-        if hello_again ==password:
-            starting_question()
-        else :
-            pass
-    elif how_to_help == 'add contact':           #######################
+        verificate()
+
+    elif how_to_help == 'add contact':
         add_contact()
-    elif how_to_help=="what is your name":       #######################
-        speak("i am lakshay's personel assistant")
-    
-    elif how_to_help=="what can you do":         #######################
+
+    elif how_to_help == "what is your name":
+
+        speak("i am lakshay's personel assistant, tony")
+    elif how_to_help == 'open instagram':
+        open_instagram()
+
+    elif how_to_help == "what can you do":
+
         speak("i can currently do only certain predefined tasks, like")
         speak("sending whatsapp message")
         speak("starting a meeting on MS teams")
@@ -296,43 +228,78 @@ def starting_question():
         speak("converting text to handwritting")
         speak("schearching on google")
         speak("here is a list of all commands ")
-        
         print(
-            "\n                Here is a list of all functions: \n 1.send whatsapp message : send message \n 2.opening i-tutor       : tutor \n 3.taking screen-shot    : screen shot \n 4.adding a new contact  : add contact \n 5.text to handwritting  : text to handwritting \n 6.join in ms teams      : join msmeet \n 7.only recording        : record screen \n 8.recording a class     : join meet with record \n \n                  Some other commands \n 1.shut down 2.exit 3.wait \n"
+            "\n                Here is a list of all functions: \n 1.send whatsapp message : send message \n 2.opening instagram       : open instagram \n 3.taking screen-shot    : screen shot \n 4.adding a new contact  : add contact \n 5.text to handwritting  : text to handwritting \n \n                  Some other commands \n 1.shut down 2.exit 3.wait 4.show commands 5.display dns  6.flush dns\n"
         )
         pg.sleep(4)
+
         starting_question()
-    elif how_to_help=="show commands":
+
+    elif how_to_help == "show commands":
         speak('here you go')
         print(
-            "\n                Here is a list of all functions: \n 1.send whatsapp message : send message \n 2.opening i-tutor       : tutor \n 3.taking screen-shot    : screen shot \n 4.adding a new contact  : add contact \n 5.text to handwritting  : text to handwritting \n 6.join in ms teams      : join msmeet \n 7.only recording        : record screen \n 8.recording a class     : join meet with record \n \n                  Some other commands \n 1.shut down 2.exit 3.wait 4.show commands\n"
+            "\n                Here is a list of all functions: \n 1.send whatsapp message : send message \n 2.opening instagram      : open instagram \n 3.taking screen-shot    : screen shot \n 4.adding a new contact  : add contact \n 5.text to handwritting  : text to handwritting \n \n                  Some other commands \n 1.shut down 2.exit 3.wait 4.show commands 5.display dns  6.flush dns\n"
         )
         starting_question()
 
-    elif how_to_help.__contains__("tutor"):
-        i_tutor()
     elif how_to_help == "screen shot":
         screenshot()
 
-    elif how_to_help=="shut down":
-        shut_down()
+    elif how_to_help == "shut down":
+        shut_down(20)
+    
+    elif how_to_help == "display dns":
+        speak('here you go!')
+        displaydns()
+    
+    elif how_to_help == "flush dns":
+        flushdns()
 
     else:
-        speak("here are some results from the web")
-        search_query = how_to_help
-        answer_to_query = web.open(
-            "https://www.google.com/search?q="+search_query)
-        # speak(answer_to_query)
+        speak('do you want pe to search it on web? ')
+        inut = input('do you want pe to search it on web? [yes]/[no] :')
+        if inut == 'yes':
+            speak("here are some results from the web")
+            search_query = how_to_help
+            answer_to_query = web.open("https://www.google.com/search?q="+search_query)
+            starting_question()
+        else:
+            starting_question()
+
+
+def verificate():
+    password = getpass()
+    if password == "HelloWorld":
         starting_question()
+    else:
+        print("password don't match")
+        exit()
 
-if password=="HelloWorld":
-    wish_me()
-    starting_question()
-else:
-    print("password don't match")
+def _ask_Verification(i , test=0):
+    if type(i)== int:
+        pass
+    else:
+        if test==1 and i=='a':
+            password = getpass()
+            if password == "HelloWorld":
+                starting_question()
+            else:
+                exit()
 
-
-# 333333333333333333333333333333333333333333333333333333333
-# 333333333333333333333333333333333333333333333333333333333
-# 333333333333333333333333333333333333333333333333333333333
-# 333333333333333333333333333333333333333333333333333333333
+    password = getpass()
+    if password == "HelloWorld":
+        wish_me()
+        starting_question()
+    elif i == 3:
+        speak('sorry, could not verify you')
+        print('sorry, could not verify you')
+        exit()
+    else:
+        print("password don't match")
+        print('you have ' + str(3-int(i)) + ' tries left')
+    while i < 4:
+        i += 1
+        _ask_Verification(i)
+    
+        
+_ask_Verification(1)
