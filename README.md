@@ -9,5 +9,6 @@
  1. Starting password is HelloWorld.
  2. To see what it can do just type `what can you do` or simply type `show commands`.
  3. I would sill recommend to go through the source code as some of the funtions are no yet listed in above commands.
+ 4. If you got stuck in a loop just type exit, not exit()
 
 **if you have any improvements please comment down.**
