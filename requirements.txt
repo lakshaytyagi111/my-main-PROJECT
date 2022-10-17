@@ -2,7 +2,6 @@ datetime
 getpass
 os
 #phone
-pyaudio
 pyautogui
 pyttsx3
 pywhatkit
