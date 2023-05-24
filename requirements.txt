@@ -8,3 +8,4 @@ pywhatkit
 selenium
 time
 webbrowser
+SpeechRecognition
