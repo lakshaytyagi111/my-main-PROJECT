@@ -5,7 +5,7 @@
 # clone it
 1. Just type 
 ```
-git clone https://github.com/Anonymous0boy/my-main-PROJECT.git
+git clone https://github.com/lakshaytyagi111/my-main-PROJECT.git
 ```
 2. All the required packages are listed in [requirements.txt](/requirements.txt) file
 3. Install packages by command 
