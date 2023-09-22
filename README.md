@@ -1,5 +1,5 @@
 # Info
- This is not an AI but done with basic pyhton but i am aiming to make it more advance in future.
+ This is not an AI but done with basic python.
  
  When you first start it, you will need password --> HelloWorld
 # clone it
